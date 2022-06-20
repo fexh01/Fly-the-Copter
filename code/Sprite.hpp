@@ -1,11 +1,11 @@
 /*
  * SPRITE
- * Copyright © 2018+ Ángel Rodríguez Ballesteros
+ * Copyright © 2022+ Félix Hernández Muñoz-Yusta
  *
  * Distributed under the Boost Software License, version  1.0
  * See documents/LICENSE.TXT or www.boost.org/LICENSE_1_0.txt
  *
- * angel.rodriguez@esne.edu
+ * felixhernandezmy@gmail.com
  */
 
 #ifndef SPRITE_HEADER
@@ -16,7 +16,7 @@
     #include <basics/Texture_2D>
     #include <basics/Vector>
 
-    namespace example
+    namespace flythecopter
     {
 
         using basics::Canvas;
@@ -117,6 +117,7 @@
                 position = new_position;
             }
 
+            // Cambia el tamaño del sprite
             void set_size (const Size2f & new_size)
             {
                 size = new_size;

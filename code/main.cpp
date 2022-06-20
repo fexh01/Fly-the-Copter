@@ -18,7 +18,7 @@
 #include <basics/opengles/OpenGL_ES2>
 
 using namespace basics;
-using namespace example;
+using namespace flythecopter;
 using namespace std;
 
 int main ()

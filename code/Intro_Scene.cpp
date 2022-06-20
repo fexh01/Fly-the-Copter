@@ -1,11 +1,11 @@
 /*
  * INTRO SCENE
- * Copyright © 2018+ Ángel Rodríguez Ballesteros
+ * Copyright © 2022+ Félix Hernández Muñoz-Yusta
  *
  * Distributed under the Boost Software License, version  1.0
  * See documents/LICENSE.TXT or www.boost.org/LICENSE_1_0.txt
  *
- * angel.rodriguez@esne.edu
+ * felixhernandezmy@gmail.com
  */
 
 #include "Intro_Scene.hpp"
@@ -16,10 +16,10 @@
 using namespace basics;
 using namespace std;
 
-namespace example
+namespace flythecopter
 {
 
-    // ---------------------------------------------------------------------------------------------
+    // Aquí se inicializan los atributos que deben restablecerse cada vez que se inicia la escena.
 
     bool Intro_Scene::initialize ()
     {
@@ -38,7 +38,8 @@ namespace example
         return true;
     }
 
-    // ---------------------------------------------------------------------------------------------
+
+    // Este método se invoca automáticamente una vez por fotograma para que la escena actualize su estado.
 
     void Intro_Scene::update (float time)
     {
@@ -52,7 +53,9 @@ namespace example
             }
     }
 
-    // ---------------------------------------------------------------------------------------------
+
+        // Este método se invoca automáticamente una vez por fotograma para que la escena dibuje su contenido.
+        // Dependiendo de la varible logoNum
 
     void Intro_Scene::render (Graphics_Context::Accessor & context)
     {
@@ -73,12 +76,14 @@ namespace example
 
             if (canvas)
             {
-                canvas->clear ();
+                canvas->clear (); //Limpia el fotograma anterior, para poder dibujar el siguiente
 
+                // Se comprueban si ambos logos están cargados
                 if (EsneLogo_texture && CopterLogo_texture)
                 {
-                    canvas->set_opacity (opacity);
+                    canvas->set_opacity (opacity); //Hace el efecto de fading_in y fading_out, cambiando la opacidad del canvas
 
+                    // Dibuja un logo u otro dependiendo del logoNum
                     if(logoNum == 0){
                         canvas->fill_rectangle
                                 (
@@ -100,21 +105,23 @@ namespace example
         }
     }
 
+
+
     void Intro_Scene::update_loading ()
     {
         Graphics_Context::Accessor context = director.lock_graphics_context ();
 
         if (context)
         {
-            // Se carga la textura del logo de Esne:
+            // Se carga la textura del logo de Esne
 
             EsneLogo_texture = Texture_2D::create (0, context, "EsneLogo.png");
 
-            // Se carga la textura del logo del Juego:
+            // Se carga la textura del logo del Juego
 
             CopterLogo_texture = Texture_2D::create (0, context, "CopterLogo.png");
 
-            // Se comprueba si las texturas se han podido cargar correctamente:
+            // Se comprueba si las texturas se han podido cargar correctamente
 
             if (EsneLogo_texture && CopterLogo_texture)
             {
@@ -132,6 +139,9 @@ namespace example
         }
     }
 
+
+    // Aparación progresiva del logo
+    // Amuento progresivo de la opacidad del canvas
     void Intro_Scene::update_fading_in ()
     {
         float elapsed_seconds = timer.get_elapsed_seconds ();
@@ -149,10 +159,10 @@ namespace example
         }
     }
 
+
+    // Se esperan dos segundos mostrando el logo
     void Intro_Scene::update_waiting ()
     {
-        // Se esperan dos segundos sin hacer nada:
-
         if (timer.get_elapsed_seconds () > 2.f)
         {
             timer.reset ();
@@ -161,6 +171,10 @@ namespace example
         }
     }
 
+
+
+    // Desaparición progresiva del logo
+    // Disminución progresiva de la opacidad del canvas
     void Intro_Scene::update_fading_out ()
     {
         float elapsed_seconds = timer.get_elapsed_seconds ();
@@ -172,7 +186,7 @@ namespace example
         else
         {
             if(logoNum == 1){
-                // Cuando el faceout se ha completado, se lanza la siguiente escena:
+                // Cuando el fadeout del segundo logo se ha completado, se lanza la siguiente escena
                 logoNum = 0;
 
                 state = FINISHED;
@@ -180,6 +194,7 @@ namespace example
                 director.run_scene (shared_ptr< Scene >(new Menu_Scene));
             }
             else{
+                //Cuando el fadeout del primer logo se ha completado, se cambia el estado y se vuelve al fading in para el segundo logo
                 logoNum = 1;
                 opacity = 0.f;
                 timer.reset ();

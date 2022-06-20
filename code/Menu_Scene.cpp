@@ -1,11 +1,11 @@
 /*
  * MENU SCENE
- * Copyright © 2018+ Ángel Rodríguez Ballesteros
+ * Copyright © 2022+ Félix Hernández Muñoz-Yusta
  *
  * Distributed under the Boost Software License, version  1.0
  * See documents/LICENSE.TXT or www.boost.org/LICENSE_1_0.txt
  *
- * angel.rodriguez@esne.edu
+ * felixhernandezmy@gmail.com
  */
 
 #include "Menu_Scene.hpp"
@@ -17,9 +17,10 @@
 using namespace basics;
 using namespace std;
 
-namespace example
+namespace flythecopter
 {
 
+    //Constructor de la escena
     Menu_Scene::Menu_Scene()
     {
         state         = LOADING;
@@ -29,7 +30,7 @@ namespace example
         ayuda = false;
     }
 
-    // ---------------------------------------------------------------------------------------------
+    //  Aquí se inicializan los atributos que deben restablecerse cada vez que se inicia la escena.
 
     bool Menu_Scene::initialize ()
     {
@@ -41,8 +42,10 @@ namespace example
         return true;
     }
 
-    // ---------------------------------------------------------------------------------------------
 
+
+
+    //Este método se invoca automáticamente una vez por fotograma cuando se acumulan eventos dirigidos a la escena.
     void Menu_Scene::handle (basics::Event & event)
     {
         if (state == READY)                     // Se descartan los eventos cuando la escena está LOADING
@@ -70,6 +73,7 @@ namespace example
 
                 case ID(touch-ended):           // El usuario deja de tocar la pantalla
                 {
+                    //toggle entre el menu y las instrucciones
                     if(ayuda){
                         ayuda = false;
                     }
@@ -95,8 +99,9 @@ namespace example
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
 
+
+    //Este método se invoca automáticamente una vez por fotograma para que la escena actualize su estado.
     void Menu_Scene::update (float time)
     {
         if (!suspended) if (state == LOADING)
@@ -105,11 +110,13 @@ namespace example
 
             if (context)
             {
+                //Asigna una imagen a las texturas
                 PlayButton_texture = Texture_2D::create (0, context, "PlayButton.png");
                 CopterLogo_texture = Texture_2D::create (0, context, "CopterLogo.png");
                 Ayuda_texture = Texture_2D::create (0, context, "ayuda.png");
                 Texto_texture = Texture_2D::create (0, context, "texto.png");
 
+                // En caso de que las texturas esten cargadas, la escena entra en estado READY
                 if (PlayButton_texture && CopterLogo_texture && Ayuda_texture && Texto_texture)
                 {
                     context->add (PlayButton_texture);
@@ -131,8 +138,8 @@ namespace example
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
 
+    //Este método se invoca automáticamente una vez por fotograma para que la escena dibuje su contenido.
     void Menu_Scene::render (Graphics_Context::Accessor & context)
     {
         if (!suspended)
@@ -157,6 +164,7 @@ namespace example
                 if (state == READY)
                 {
                     if(!ayuda){
+                        // Dibuja el menu
                         if (PlayButton_texture && CopterLogo_texture){
                             canvas->fill_rectangle
                                     (
@@ -178,6 +186,7 @@ namespace example
                                     );
                         }
                     }
+                    // Dibuja las instrucciones
                     else{
                         canvas->fill_rectangle
                                 (
@@ -192,8 +201,7 @@ namespace example
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
-
+    // Establece las propiedades de cada opción
     void Menu_Scene::configure_options ()
     {
         // Se calcula la altura total del menú:
@@ -221,8 +229,8 @@ namespace example
         initialize ();
     }
 
-    // ---------------------------------------------------------------------------------------------
 
+    // Devuelve el índice de la opción que se encuentra bajo el punto indicado.
     int Menu_Scene::option_at (const Point2f & point)
     {
         for (int index = 0; index < number_of_options; ++index)

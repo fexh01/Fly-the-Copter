@@ -12,7 +12,7 @@
 
 using namespace basics;
 
-namespace example
+namespace flythecopter
 {
 
     Sprite::Sprite(Texture_2D * texture)

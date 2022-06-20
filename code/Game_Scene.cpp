@@ -1,11 +1,11 @@
 /*
  * GAME SCENE
- * Copyright © 2018+ Ángel Rodríguez Ballesteros
+ * Copyright © 2022+ Félix Hernández Muñoz-Yusta
  *
  * Distributed under the Boost Software License, version  1.0
  * See documents/LICENSE.TXT or www.boost.org/LICENSE_1_0.txt
  *
- * angel.rodriguez@esne.edu
+ * felixhernandezmy@gmail.com
  */
 
 #include "Game_Scene.hpp"
@@ -18,9 +18,8 @@
 using namespace basics;
 using namespace std;
 
-namespace example
+namespace flythecopter
 {
-    // ---------------------------------------------------------------------------------------------
     // ID y ruta de las texturas que se deben cargar para esta escena. La textura con el mensaje de
     // carga está la primera para poder dibujarla cuanto antes:
 
@@ -31,12 +30,12 @@ namespace example
         { ID(wall),"game-scene/wall.png"},
     };
 
-    // Pâra determinar el número de items en el array textures_data, se divide el tamaño en bytes
+    // Para determinar el número de items en el array textures_data, se divide el tamaño en bytes
     // del array completo entre el tamaño en bytes de un item:
 
     unsigned Game_Scene::textures_count = sizeof(textures_data) / sizeof(Texture_Data);
 
-    // ---------------------------------------------------------------------------------------------
+
 
     Game_Scene::Game_Scene()
     {
@@ -56,7 +55,7 @@ namespace example
         initialize ();
     }
 
-    // ---------------------------------------------------------------------------------------------
+
     // Algunos atributos se inicializan en este método en lugar de hacerlo en el constructor porque
     // este método puede ser llamado más veces para restablecer el estado de la escena y el constructor
     // solo se invoca una vez.
@@ -70,27 +69,27 @@ namespace example
         return true;
     }
 
-    // ---------------------------------------------------------------------------------------------
+
 
     void Game_Scene::suspend ()
     {
         suspended = true;               // Se marca que la escena ha pasado a segundo plano
     }
 
-    // ---------------------------------------------------------------------------------------------
+
 
     void Game_Scene::resume ()
     {
         suspended = false;              // Se marca que la escena ha pasado a primer plano
     }
 
-    // ---------------------------------------------------------------------------------------------
+
 
     void Game_Scene::handle (Event & event)
     {
         if (state == RUNNING)               // Se descartan los eventos cuando la escena está LOADING
         {
-            if (gameplay == GAME_OVER){
+            if (gameplay == GAME_OVER){     // En caso de tocar la pantalla una vez hayas perdido, vuelves al menu inicial
                 switch (event.id) {
                     case ID(touch-ended):
                     {
@@ -118,6 +117,7 @@ namespace example
 
                 case ID(touch-ended):       // El usuario deja de tocar la pantalla
                 {
+                    // En caso de tocar la esquina superior derecha, pausa el juego
                     if((*event[ID(x)].as< var::Float > ()) > canvas_width - 200 && (*event[ID(y)].as< var::Float > ()) > canvas_height - 150){
                         state = PAUSED;
                     }
@@ -129,13 +129,14 @@ namespace example
                 }
             }
         }
+        // En caso de que el juego este pausado, si tocas la pantalla vuelve al juego
         else if(state == PAUSED){
             state = RUNNING;
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
 
+    //Este método se invoca automáticamente una vez por fotograma para que la escena actualize su estado.
     void Game_Scene::update (float time)
     {
         if (!suspended) switch (state)
@@ -147,8 +148,7 @@ namespace example
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
-
+    // Este método se invoca automáticamente una vez por fotograma para que la escena dibuje su contenido.
     void Game_Scene::render (Context & context)
     {
         if (!suspended)
@@ -181,7 +181,7 @@ namespace example
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
+
     // En este método solo se carga una textura por fotograma para poder pausar la carga si el
     // juego pasa a segundo plano inesperadamente. Otro aspecto interesante es que la carga no
     // comienza hasta que la escena se inicia para así tener la posibilidad de mostrar al usuario
@@ -208,8 +208,6 @@ namespace example
 
                 if (texture) context->add (texture); else state = ERROR;
 
-                // Cuando se han terminado de cargar todas las texturas se pueden crear los sprites que
-                // las usarán e iniciar el juego:
                 BackButton_texture = Texture_2D::create (0, context, "volverMenu.png");
                 CopterLogo_texture = Texture_2D::create (0, context, "CopterLogo.png");
                 StopButton_texture = Texture_2D::create (0, context, "pause.png");
@@ -238,7 +236,7 @@ namespace example
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
+    // Creacion de los sprites del techo, el suelo y el jugador
 
     void Game_Scene::create_sprites ()
     {
@@ -267,9 +265,8 @@ namespace example
         player   =  player_handle.get ();
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // Juando el juego se inicia por primera vez o cuando se reinicia porque un jugador pierde, se
-    // llama a este método para restablecer la posición y velocidad de los sprites:
+
+    // Cuando el juego se inicia por primera vez se llama a este método para restablecer la posición y velocidad de los sprites:
 
     void Game_Scene::restart_game()
     {
@@ -279,16 +276,16 @@ namespace example
         gameplay = WAITING_TO_START;
     }
 
-    // ---------------------------------------------------------------------------------------------
+
 
     void Game_Scene::start_playing ()
     {
-        player->set_speed_y (-300.f);
+        player->set_speed_y (-300.f); // Al jugador le afecta la gravedad
 
         gameplay = PLAYING;
     }
 
-    // ---------------------------------------------------------------------------------------------
+
 
     void Game_Scene::run_simulation (float time)
     {
@@ -296,9 +293,9 @@ namespace example
         {
             sprite->update (time);
         }
-        if(gameplay == PLAYING){
+        if(gameplay == PLAYING){ // Mientras el juego esta en PLAYING, se crean obstaculos aleatorios
 
-            if(rand() % 51 == 0 && timer.get_elapsed_seconds() > .75f){
+            if(rand() % 51 == 0 && timer.get_elapsed_seconds() > .75f){ //Probabilidad random de que aparezca obstaculo y tiempo que tine que esperar hasta que salga el siguiente
                 Sprite_Handle newObstacle(new Sprite( textures[ID(wall)].get () ));
                 newObstacle->set_anchor(CENTER | RIGHT);
                 newObstacle->set_position ({ canvas_width + 75, rand() % (canvas_height - 50) + (50)});
@@ -322,11 +319,9 @@ namespace example
         check_collisions ();
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // Se hace que el player dechero se mueva hacia arriba o hacia abajo según el usuario esté
-    // tocando la pantalla por encima o por debajo de su centro. Cuando el usuario no toca la
-    // pantalla se deja al player quieto.
 
+
+    // Hace que el player se vuele o no dependiendo de si el usuario está tocando.
     void Game_Scene::update_user ()
     {
         if(gameplay == GAME_OVER){
@@ -352,7 +347,7 @@ namespace example
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
+    // Se detectan las colisiones del jugador con los sprites (bordes y obstaculos)
 
     void Game_Scene::check_collisions ()
     {
@@ -367,7 +362,7 @@ namespace example
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
+
 
     void Game_Scene::render_loading (Canvas & canvas)
     {
@@ -384,8 +379,8 @@ namespace example
         }
     }
 
-    // ---------------------------------------------------------------------------------------------
-    // Simplemente se dibujan todos los sprites que conforman la escena.
+
+    // Se dibujan todos los sprites que conforman la escena.
 
     void Game_Scene::render_playfield (Canvas & canvas)
     {
@@ -426,6 +421,7 @@ namespace example
 
     }
 
+    //Al pararse el juego se muestra un botón en grande para continuar
     void Game_Scene::render_pause (Canvas & canvas)
     {
         canvas.fill_rectangle

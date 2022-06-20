@@ -1,11 +1,11 @@
 /*
  * INTRO SCENE
- * Copyright © 2018+ Ángel Rodríguez Ballesteros
+ * Copyright © 2022+ Félix Hernández Muñoz-Yusta
  *
  * Distributed under the Boost Software License, version  1.0
  * See documents/LICENSE.TXT or www.boost.org/LICENSE_1_0.txt
  *
- * angel.rodriguez@esne.edu
+ * felixhernandezmy@gmail.com
  */
 
 #ifndef INTRO_SCENE_HEADER
@@ -17,7 +17,7 @@
 #include <basics/Texture_2D>
 #include <basics/Timer>
 
-namespace example
+namespace flythecopter
 {
 
     using basics::Timer;
@@ -28,9 +28,9 @@ namespace example
     class Intro_Scene : public basics::Scene
     {
 
-        /**
-         * Representa el estado de la escena en su conjunto.
-         */
+
+         //Enum de posibles estados de la escena
+
         enum State
         {
             UNINITIALIZED,
@@ -42,25 +42,27 @@ namespace example
             ERROR
         };
 
+
     private:
 
-        State    state;                                     ///< Estado de la escena.
-        bool     suspended;                                 ///< true cuando la escena está en segundo plano y viceversa.
+        State    state;                                     // Estado de la escena.
+        bool     suspended;                                 //true cuando la escena está en segundo plano y viceversa.
 
-        unsigned canvas_width;                              ///< Ancho de la resolución virtual usada para dibujar.
-        unsigned canvas_height;                             ///< Alto  de la resolución virtual usada para dibujar.
+        unsigned canvas_width;                              //Ancho de la resolución virtual usada para dibujar.
+        unsigned canvas_height;                             //Alto  de la resolución virtual usada para dibujar.
 
-        Timer    timer;                                     ///< Cronómetro usado para medir intervalos de tiempo.
+        Timer    timer;                                     //Cronómetro usado para medir intervalos de tiempo.
 
-        float    opacity;                                   ///< Opacidad de la textura.
+        float    opacity;                                   //Opacidad del canvas.
 
-        int     logoNum;                                        ///< Logo que se muestra
+        int     logoNum;                                    //Logo que se muestra
 
-        std::shared_ptr < Texture_2D > EsneLogo_texture;    ///< Textura que contiene la imagen del logo de Esne.
-        std::shared_ptr < Texture_2D > CopterLogo_texture;    ///< Textura que contiene la imagen del logo del Juego.
+        std::shared_ptr < Texture_2D > EsneLogo_texture;    //Textura que contiene la imagen del logo de Esne.
+        std::shared_ptr < Texture_2D > CopterLogo_texture;  //Textura que contiene la imagen del logo del Juego.
 
     public:
 
+        //Se crea la escena de introducción con una resolución por defecto y se le asigna un estado
         Intro_Scene()
         {
             state         = UNINITIALIZED;
@@ -70,7 +72,7 @@ namespace example
             logoNum       = 0;
         }
 
-        /**
+        /*
          * Este método lo llama Director para conocer la resolución virtual con la que está
          * trabajando la escena.
          * @return Tamaño en coordenadas virtuales que está usando la escena.
@@ -80,40 +82,39 @@ namespace example
             return { canvas_width, canvas_height };
         }
 
-        /**
+        /*
          * Aquí se inicializan los atributos que deben restablecerse cada vez que se inicia la escena.
          * @return
          */
         bool initialize () override;
 
-        /**
-         * Este método lo invoca Director automáticamente cuando el juego pasa a segundo plano.
-         */
+
+         // Este método lo invoca Director automáticamente cuando el juego pasa a segundo plano.
+
         void suspend () override
         {
             suspended = true;
         }
 
-        /**
-         * Este método lo invoca Director automáticamente cuando el juego pasa a primer plano.
-         */
+
+         // Este método lo invoca Director automáticamente cuando el juego pasa a primer plano.
+
         void resume () override
         {
             suspended = false;
         }
 
-        /**
-         * Este método se invoca automáticamente una vez por fotograma para que la escena
-         * actualize su estado.
-         */
+
+        // Este método se invoca automáticamente una vez por fotograma para que la escena actualize su estado.
+
         void update (float time) override;
 
-        /**
-         * Este método se invoca automáticamente una vez por fotograma para que la escena
-         * dibuje su contenido.
-         */
+
+        //Este método se invoca automáticamente una vez por fotograma para que la escena dibuje su contenido.
+
         void render (Graphics_Context::Accessor & context) override;
 
+        //Acciones a realizar en el programa dependiendo de su estado
     private:
 
         void update_loading    ();
