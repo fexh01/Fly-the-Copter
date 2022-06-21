@@ -168,7 +168,7 @@ namespace flythecopter
         void update_user ();
 
 
-        //
+        // Se detectan las colisiones del jugador con los obstáculos
         void check_collisions ();
 
         /*

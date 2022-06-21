@@ -353,7 +353,6 @@ namespace flythecopter
     }
 
     // Se detectan las colisiones del jugador con los obstáculos
-
     void Game_Scene::check_collisions ()
     {
         if(gameplay == PLAYING){
@@ -407,7 +406,7 @@ namespace flythecopter
                             StopButton_texture. get ()
                     );
         }
-            //Muestra la pantalla de game over
+        //Muestra la pantalla de game over
         else if(gameplay == GAME_OVER){
             if (BackButton_texture && CopterLogo_texture){
                 canvas.fill_rectangle
