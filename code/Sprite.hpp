@@ -104,7 +104,6 @@
         public:
 
             // Setters (con nombres autoexplicativos):
-
             void set_anchor (int new_anchor)
             {
                 anchor = new_anchor;

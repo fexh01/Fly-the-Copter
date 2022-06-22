@@ -25,14 +25,13 @@ namespace flythecopter
 
     Game_Scene::Texture_Data Game_Scene::textures_data[] =
             {
-                    { ID(loading),"game-scene/loading.png"},
-                    { ID(copter),"game-scene/helicoptero.png"},
-                    { ID(wall),"game-scene/wall.png"},
+                { ID(loading),"game-scene/loading.png"},
+                { ID(copter),"game-scene/helicoptero.png"},
+                { ID(wall),"game-scene/wall.png"},
             };
 
     // Para determinar el número de items en el array textures_data, se divide el tamaño en bytes
     // del array completo entre el tamaño en bytes de un item:
-
     unsigned Game_Scene::textures_count = sizeof(textures_data) / sizeof(Texture_Data);
 
 
@@ -42,16 +41,13 @@ namespace flythecopter
         // Se establece la resolución virtual (independiente de la resolución virtual del dispositivo).
         // En este caso no se hace ajuste de aspect ratio, por lo que puede haber distorsión cuando
         // el aspect ratio real de la pantalla del dispositivo es distinto.
-
         canvas_width  = 1280;
         canvas_height =  720;
 
         // Se inicia la semilla del generador de números aleatorios:
-
         srand (unsigned(time(nullptr)));
 
         // Se inicializan otros atributos:
-
         initialize ();
     }
 
@@ -59,7 +55,6 @@ namespace flythecopter
     // Algunos atributos se inicializan en este método en lugar de hacerlo en el constructor porque
     // este método puede ser llamado más veces para restablecer el estado de la escena y el constructor
     // solo se invoca una vez.
-
     bool Game_Scene::initialize ()
     {
         state     = LOADING;
@@ -120,17 +115,14 @@ namespace flythecopter
                         // En caso de tocar la esquina superior derecha, pausa el juego
                         if((*event[ID(x)].as< var::Float > ()) > canvas_width - 200 && (*event[ID(y)].as< var::Float > ()) > canvas_height - 150){
                             state = PAUSED;
-                        }
-                        else{
+                        }else{
                             flying = false;
                         }
 
                         break;
                     }
                 }
-        }
-            // En caso de que el juego este pausado, si tocas la pantalla vuelve al juego
-        else if(state == PAUSED){
+        } else if(state == PAUSED){   // En caso de que el juego este pausado, si tocas la pantalla vuelve al juego
             state = RUNNING;
         }
     }
@@ -154,11 +146,9 @@ namespace flythecopter
         if (!suspended)
         {
             // El canvas se puede haber creado previamente, en cuyo caso solo hay que pedirlo:
-
             Canvas * canvas = context->get_renderer< Canvas > (ID(canvas));
 
             // Si no se ha creado previamente, hay que crearlo una vez:
-
             if (!canvas)
             {
                 canvas = Canvas::create (ID(canvas), context, {{ canvas_width, canvas_height }});
@@ -187,7 +177,6 @@ namespace flythecopter
     // comienza hasta que la escena se inicia para así tener la posibilidad de mostrar al usuario
     // que la carga está en curso en lugar de tener una pantalla en negro que no responde durante
     // un tiempo.
-
     void Game_Scene::load_textures ()
     {
         if (textures.size () < textures_count)          // Si quedan texturas por cargar...
@@ -200,18 +189,16 @@ namespace flythecopter
             if (context)
             {
                 // Se carga la siguiente textura (textures.size() indica cuántas llevamos cargadas):
-
                 Texture_Data   & texture_data = textures_data[textures.size ()];
                 Texture_Handle & texture      = textures[texture_data.id] = Texture_2D::create (texture_data.id, context, texture_data.path);
 
                 // Se comprueba si la textura se ha podido cargar correctamente:
-
                 if (texture) context->add (texture); else state = ERROR;
 
                 BackButton_texture = Texture_2D::create (0, context, "volverMenu.png");
                 CopterLogo_texture = Texture_2D::create (0, context, "CopterLogo.png");
                 StopButton_texture = Texture_2D::create (0, context, "pause.png");
-                Continue_texture = Texture_2D::create (0, context, "continuar.png");
+                Continue_texture   = Texture_2D::create (0, context, "continuar.png");
 
                 if (BackButton_texture && CopterLogo_texture && StopButton_texture && Continue_texture)
                 {
@@ -219,19 +206,14 @@ namespace flythecopter
                     context->add (CopterLogo_texture);
                     context->add (StopButton_texture);
                     context->add (Continue_texture);
-                }
-                else
-                {
+                }else{
                     state = ERROR;
                 }
             }
-        }
-        else
-        if (timer.get_elapsed_seconds () > 1.f)         // Si las texturas se han cargado muy rápido
+        }else if (timer.get_elapsed_seconds () > 1.f)   // Si las texturas se han cargado muy rápido
         {                                               // se espera un segundo desde el inicio de
             create_sprites ();                          // la carga antes de pasar al juego para que
-            restart_game   ();                          // el mensaje de carga no aparezca y desaparezca
-            // demasiado rápido.
+            restart_game   ();                          // el mensaje de carga no aparezca y desaparezca demasiado rápido.
             state = RUNNING;
         }
     }
@@ -246,6 +228,7 @@ namespace flythecopter
         top_bar->set_anchor   (TOP | LEFT);
         top_bar->set_position ({ 0, canvas_height });
         top_bar->set_size({ .0f + canvas_width, .0f + canvas_height / 15});
+
         bottom_bar->set_anchor   (BOTTOM | LEFT);
         bottom_bar->set_position ({ 0, 0 });
         bottom_bar->set_size({ .0f + canvas_width, .0f + canvas_height / 15});
@@ -255,11 +238,10 @@ namespace flythecopter
 
 
         Sprite_Handle player_handle(new Sprite( textures[ID(copter)].get () ));
-
         sprites.push_back ( player_handle);
 
-        // Se guardan punteros a los sprites que se van a usar frecuentemente:
 
+        // Se guardan punteros a los sprites que se van a usar frecuentemente:
         top_border    =             top_bar.get ();
         bottom_border =          bottom_bar.get ();
         player   =  player_handle.get ();
@@ -267,7 +249,6 @@ namespace flythecopter
 
 
     // Cuando el juego se inicia por primera vez se llama a este método para restablecer la posición y velocidad de los sprites:
-
     void Game_Scene::restart_game()
     {
         player->set_position ({ canvas_width / 5.f, canvas_height / 2.f });
@@ -289,6 +270,7 @@ namespace flythecopter
 
     void Game_Scene::run_simulation (float time)
     {
+        // Se actualiza el estado de los sprites
         for (auto & sprite : sprites)
         {
             sprite->update (time);
@@ -296,17 +278,22 @@ namespace flythecopter
         if(gameplay == PLAYING){ // Mientras el juego esta en PLAYING, se crean obstaculos aleatorios
 
             if(rand() % 51 == 0 && timer.get_elapsed_seconds() > .75f){ //Probabilidad random de que aparezca obstaculo y tiempo que tiene que esperar hasta que salga el siguiente
+
                 Sprite_Handle newObstacle(new Sprite( textures[ID(wall)].get () )); //Se crea el nuevo obstaculo
+
                 //Se configuran sus propiedades (Posicion, velocidad,...)
                 newObstacle->set_anchor(CENTER | RIGHT);
                 newObstacle->set_position ({ canvas_width + 75, rand() % (canvas_height - 50) + (50)});
                 newObstacle->set_size({ 75.f, 0.f + rand() % 200 + 100});
                 newObstacle->set_speed_x(-400.f);
+
                 //Se añade el nuevo obstáculo al array
                 obstacles.push_back(newObstacle);
+
                 //Se resetea el timer
                 timer.reset();
             }
+
             // Se actualizan los obstáculos y si alguno sale de la pantalla se elimina del array
             for (auto & sprite : obstacles)
             {
@@ -319,6 +306,7 @@ namespace flythecopter
         }
         //Se actualiza al jugador
         update_user ();
+
         //Se comprueban las colisiones con los obstáculos
         check_collisions ();
     }
@@ -331,19 +319,16 @@ namespace flythecopter
     {
         if(gameplay == GAME_OVER){
             player->set_speed_y(0.0f);
-        }
-        else if(gameplay == PLAYING){
+        } else if(gameplay == PLAYING){
             if (player->intersects (*top_border))
             {
                 gameplay = GAME_OVER;
             }
-            else
-            if (player->intersects (*bottom_border))
+            else if (player->intersects (*bottom_border))
             {
                 gameplay = GAME_OVER;
             }
-            else
-            if (flying)
+            else if (flying)
             {
                 player->set_speed_y(350.f);
             }
@@ -385,7 +370,6 @@ namespace flythecopter
 
 
     // Se dibujan todos los sprites que conforman la escena.
-
     void Game_Scene::render_playfield (Canvas & canvas)
     {
         if(gameplay == PLAYING || gameplay == WAITING_TO_START){
@@ -398,6 +382,7 @@ namespace flythecopter
                 sprite->render (canvas);
             }
         }
+
         if(gameplay == PLAYING){
             canvas.fill_rectangle
                     (
@@ -425,6 +410,7 @@ namespace flythecopter
         }
 
     }
+
 
     //Al pararse el juego se muestra un botón en grande para continuar
     void Game_Scene::render_pause (Canvas & canvas)

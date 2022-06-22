@@ -28,9 +28,7 @@ namespace flythecopter
     class Intro_Scene : public basics::Scene
     {
 
-
-         //Enum de posibles estados de la escena
-
+        // enum de posibles estados de la escena
         enum State
         {
             UNINITIALIZED,
@@ -89,16 +87,14 @@ namespace flythecopter
         bool initialize () override;
 
 
-         // Este método lo invoca Director automáticamente cuando el juego pasa a segundo plano.
-
+        // Este método lo invoca Director automáticamente cuando el juego pasa a segundo plano.
         void suspend () override
         {
             suspended = true;
         }
 
 
-         // Este método lo invoca Director automáticamente cuando el juego pasa a primer plano.
-
+        // Este método lo invoca Director automáticamente cuando el juego pasa a primer plano.
         void resume () override
         {
             suspended = false;
@@ -106,17 +102,16 @@ namespace flythecopter
 
 
         // Este método se invoca automáticamente una vez por fotograma para que la escena actualize su estado.
-
         void update (float time) override;
 
 
         //Este método se invoca automáticamente una vez por fotograma para que la escena dibuje su contenido.
-
         void render (Graphics_Context::Accessor & context) override;
 
-        //Acciones a realizar en el programa dependiendo de su estado
+
     private:
 
+        //Acciones a realizar en el programa dependiendo de su estado
         void update_loading    ();
         void update_fading_in  ();
         void update_waiting    ();

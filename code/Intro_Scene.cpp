@@ -20,15 +20,14 @@ namespace flythecopter
 {
 
     // Aquí se inicializan los atributos que deben restablecerse cada vez que se inicia la escena.
-
     bool Intro_Scene::initialize ()
     {
         if (state == UNINITIALIZED)
         {
             state = LOADING;
-        }
-        else
-        {
+
+        }else{
+
             timer.reset ();
 
             logoNum = 0;
@@ -39,8 +38,8 @@ namespace flythecopter
     }
 
 
-    // Este método se invoca automáticamente una vez por fotograma para que la escena actualize su estado.
 
+    // Este método se invoca automáticamente una vez por fotograma para que la escena actualize su estado.
     void Intro_Scene::update (float time)
     {
         if (!suspended) switch (state)
@@ -54,26 +53,23 @@ namespace flythecopter
     }
 
 
-        // Este método se invoca automáticamente una vez por fotograma para que la escena dibuje su contenido.
-        // Dependiendo de la varible logoNum
 
+    // Este método se invoca automáticamente una vez por fotograma para que la escena dibuje su contenido.
+    // Dependiendo de la varible logoNum
     void Intro_Scene::render (Graphics_Context::Accessor & context)
     {
         if (!suspended)
         {
             // El canvas se puede haber creado previamente, en cuyo caso solo hay que pedirlo:
-
             Canvas * canvas = context->get_renderer< Canvas > (ID(canvas));
 
             // Si no se ha creado previamente, hay que crearlo una vez:
-
             if (!canvas)
             {
                 canvas = Canvas::create (ID(canvas), context, {{ canvas_width, canvas_height }});
             }
 
             // Si el canvas se ha podido obtener o crear, se puede dibujar con él:
-
             if (canvas)
             {
                 canvas->clear (); //Limpia el fotograma anterior, para poder dibujar el siguiente
@@ -91,8 +87,7 @@ namespace flythecopter
                                         { EsneLogo_texture->get_width (), EsneLogo_texture->get_height () },
                                         EsneLogo_texture. get ()
                                 );
-                    }
-                    else{
+                    }else{
                         canvas->fill_rectangle
                                 (
                                         { canvas_width * .5f, canvas_height * .5f },
@@ -114,15 +109,13 @@ namespace flythecopter
         if (context)
         {
             // Se carga la textura del logo de Esne
-
             EsneLogo_texture = Texture_2D::create (0, context, "EsneLogo.png");
 
             // Se carga la textura del logo del Juego
-
             CopterLogo_texture = Texture_2D::create (0, context, "CopterLogo.png");
 
-            // Se comprueba si las texturas se han podido cargar correctamente
 
+            // Se comprueba si las texturas se han podido cargar correctamente
             if (EsneLogo_texture && CopterLogo_texture)
             {
                 context->add (EsneLogo_texture);
@@ -133,11 +126,12 @@ namespace flythecopter
                 logoNum = 0;
                 opacity = 0.f;
                 state   = FADING_IN;
-            }
-            else
+
+            }else
                 state   = ERROR;
         }
     }
+
 
 
     // Aparación progresiva del logo
@@ -149,9 +143,9 @@ namespace flythecopter
         if (elapsed_seconds < 1.f)
         {
             opacity = elapsed_seconds;      // Se aumenta la opacidad del logo a medida que pasa el tiempo
-        }
-        else
-        {
+
+        }else{
+
             timer.reset ();
 
             opacity = 1.f;
@@ -182,18 +176,18 @@ namespace flythecopter
         if (elapsed_seconds < .5f)
         {
             opacity = 1.f - elapsed_seconds * 2.f;      // Se reduce la opacidad de 1 a 0 en medio segundo
-        }
-        else
-        {
+
+        }else{
+
+            // Cuando el fadeout del segundo logo se ha completado, se lanza la siguiente escena
             if(logoNum == 1){
-                // Cuando el fadeout del segundo logo se ha completado, se lanza la siguiente escena
+
                 logoNum = 0;
 
                 state = FINISHED;
 
                 director.run_scene (shared_ptr< Scene >(new Menu_Scene));
-            }
-            else{
+            }else{
                 //Cuando el fadeout del primer logo se ha completado, se cambia el estado y se vuelve al fading in para el segundo logo
                 logoNum = 1;
                 opacity = 0.f;
@@ -202,5 +196,4 @@ namespace flythecopter
             }
         }
     }
-
 }

@@ -20,7 +20,7 @@ using namespace std;
 namespace flythecopter
 {
 
-    //Constructor de la escena
+    // Constructor de la escena
     Menu_Scene::Menu_Scene()
     {
         state         = LOADING;
@@ -30,7 +30,7 @@ namespace flythecopter
         ayuda = false;
     }
 
-    //  Aquí se inicializan los atributos que deben restablecerse cada vez que se inicia la escena.
+    // Aquí se inicializan los atributos que deben restablecerse cada vez que se inicia la escena.
 
     bool Menu_Scene::initialize ()
     {
@@ -38,14 +38,13 @@ namespace flythecopter
         {
             option.is_pressed = false;
         }
-
         return true;
     }
 
 
 
 
-    //Este método se invoca automáticamente una vez por fotograma cuando se acumulan eventos dirigidos a la escena.
+    // Este método se invoca automáticamente una vez por fotograma cuando se acumulan eventos dirigidos a la escena.
     void Menu_Scene::handle (basics::Event & event)
     {
         if (state == READY)                     // Se descartan los eventos cuando la escena está LOADING
@@ -73,7 +72,7 @@ namespace flythecopter
 
                 case ID(touch-ended):           // El usuario deja de tocar la pantalla
                 {
-                    //toggle entre el menu y las instrucciones
+                    // toggle entre el menu y las instrucciones
                     if(ayuda){
                         ayuda = false;
                     }
@@ -101,7 +100,7 @@ namespace flythecopter
 
 
 
-    //Este método se invoca automáticamente una vez por fotograma para que la escena actualize su estado.
+    // Este método se invoca automáticamente una vez por fotograma para que la escena actualize su estado.
     void Menu_Scene::update (float time)
     {
         if (!suspended) if (state == LOADING)
@@ -110,7 +109,7 @@ namespace flythecopter
 
             if (context)
             {
-                //Asigna una imagen a las texturas
+                // Asigna una imagen a las texturas
                 PlayButton_texture = Texture_2D::create (0, context, "PlayButton.png");
                 CopterLogo_texture = Texture_2D::create (0, context, "CopterLogo.png");
                 Ayuda_texture = Texture_2D::create (0, context, "ayuda.png");
@@ -124,9 +123,8 @@ namespace flythecopter
                     context->add (Ayuda_texture);
                     context->add (Texto_texture);
                     state = READY;
-                }
-                else
-                {
+
+                }else{
                     state = ERROR;
                 }
 
@@ -139,24 +137,21 @@ namespace flythecopter
     }
 
 
-    //Este método se invoca automáticamente una vez por fotograma para que la escena dibuje su contenido.
+    // Este método se invoca automáticamente una vez por fotograma para que la escena dibuje su contenido.
     void Menu_Scene::render (Graphics_Context::Accessor & context)
     {
         if (!suspended)
         {
             // El canvas se puede haber creado previamente, en cuyo caso solo hay que pedirlo:
-
             Canvas * canvas = context->get_renderer< Canvas > (ID(canvas));
 
             // Si no se ha creado previamente, hay que crearlo una vez:
-
             if (!canvas)
             {
                  canvas = Canvas::create (ID(canvas), context, {{ canvas_width, canvas_height }});
             }
 
             // Si el canvas se ha podido obtener o crear, se puede dibujar con él:
-
             if (canvas)
             {
                 canvas->clear ();
@@ -168,20 +163,20 @@ namespace flythecopter
                         if (PlayButton_texture && CopterLogo_texture){
                             canvas->fill_rectangle
                                     (
-                                            { canvas_width * .5f, canvas_height * .7f },
-                                            { (CopterLogo_texture->get_width ())*1.f, (CopterLogo_texture->get_height ())*1.f },
+                                            {canvas_width * .5f, canvas_height * .7f},
+                                            {(CopterLogo_texture->get_width ())*1.f, (CopterLogo_texture->get_height ())*1.f },
                                             CopterLogo_texture. get ()
                                     );
                             canvas->fill_rectangle
                                     (
-                                            { options[0].position[0], options[0].position[1] },
-                                            { (PlayButton_texture->get_width ()), (PlayButton_texture->get_height ()) },
+                                            {options[0].position[0], options[0].position[1]},
+                                            {(PlayButton_texture->get_width ()), (PlayButton_texture->get_height ()) },
                                             PlayButton_texture. get ()
                                     );
                             canvas->fill_rectangle
                                     (
-                                            { options[1].position[0], options[1].position[1] },
-                                            { (Ayuda_texture->get_width ()), (Ayuda_texture->get_height ()) },
+                                            {options[1].position[0], options[1].position[1]},
+                                            {(Ayuda_texture->get_width ()), (Ayuda_texture->get_height ()) },
                                             Ayuda_texture. get ()
                                     );
                         }
@@ -205,18 +200,16 @@ namespace flythecopter
     void Menu_Scene::configure_options ()
     {
         // Se calcula la altura total del menú:
-
         float menu_height = 0;
-
         for (auto & option : options) menu_height += (PlayButton_texture->get_height ())*2;
+
 
         // Se calcula la posición del borde superior del menú en su conjunto de modo que
         // quede centrado verticalmente:
-
         float option_top = canvas_height / 20.f + menu_height / 2.5f;
 
-        // Se establece la posición del borde superior de cada opción:
 
+        // Se establece la posición del borde superior de cada opción:
         for (unsigned index = 0; index < number_of_options; ++index)
         {
             options[index].position = Point2f{ canvas_width / 2.f, option_top };
@@ -224,8 +217,8 @@ namespace flythecopter
             option_top -= (PlayButton_texture->get_height ());
         }
 
-        // Se restablece la presión de cada opción:
 
+        // Se restablece la presión de cada opción:
         initialize ();
     }
 
@@ -248,8 +241,6 @@ namespace flythecopter
                 return index;
             }
         }
-
         return -1;
     }
-
 }

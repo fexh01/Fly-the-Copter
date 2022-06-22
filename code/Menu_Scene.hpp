@@ -32,7 +32,7 @@
         {
 
 
-            //Enum de posibles estados de la escena
+            // enum de posibles estados de la escena
             enum State
             {
                 LOADING,
@@ -40,7 +40,7 @@
                 ERROR
             };
 
-            //enum de las opciones del menu
+            // enum de las opciones del menu
             enum Option_Id
             {
                 PLAY,
@@ -73,7 +73,7 @@
             std::shared_ptr < Texture_2D > Ayuda_texture;       // Textura del botón de ayuda
             std::shared_ptr < Texture_2D > Texto_texture;       // Textura de las instrucciones
 
-            bool ayuda;
+            bool ayuda;                                         // Variable para activar y desactivar el texto de ayuda
 
         public:
 

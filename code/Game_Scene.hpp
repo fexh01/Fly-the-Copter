@@ -42,7 +42,7 @@ namespace flythecopter
         typedef basics::Graphics_Context::Accessor Context;
 
 
-        //Enum de posibles estados de la escena
+        // enum de posibles estados de la escena
         enum State
         {
             LOADING,
@@ -52,7 +52,7 @@ namespace flythecopter
         };
 
 
-        //Enum de los posibles estados del juego cuando el estado de la escena es RUNNING.
+        // enum de los posibles estados del juego cuando el estado de la escena es RUNNING.
         enum Gameplay_State
         {
             UNINITIALIZED,
@@ -87,7 +87,7 @@ namespace flythecopter
         Sprite       * bottom_border;                       // Puntero al sprite de la lista de sprites que representa el borde inferior.
         Sprite       * player;                              // Puntero al sprite de la lista de sprites que representa al jugador.
 
-        Sprite_List obstacles;                              // Conjunto de los sprites de los obstaculos activos en la escena
+        Sprite_List    obstacles;                           // Conjunto de los sprites de los obstaculos activos en la escena
 
         bool           flying;                              // Representa si el jugador se mueve hacia arriba o hacia abajo
 
@@ -185,7 +185,7 @@ namespace flythecopter
         void render_playfield (Canvas & canvas);
 
 
-        //
+        // Al pararse el juego se muestra un botón en grande para continuar
         void render_pause (Canvas & canvas);
 
     };
